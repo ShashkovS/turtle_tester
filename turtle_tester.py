@@ -1,6 +1,20 @@
 # -*- coding: utf-8 -*-
 import math
 
+__all__ = ['ScrolledCanvas', 'TurtleScreen', 'Screen', 'RawTurtle', 'Turtle', 'RawPen', 'Pen', 'Shape', 'Vec2D', 'back',
+           'backward', 'begin_fill', 'begin_poly', 'bk', 'addshape', 'bgcolor', 'bgpic', 'bye', 'clearscreen',
+           'colormode', 'delay', 'exitonclick', 'getcanvas', 'getshapes', 'listen', 'mainloop', 'mode', 'numinput',
+           'onkey', 'onkeypress', 'onkeyrelease', 'onscreenclick', 'ontimer', 'register_shape', 'resetscreen',
+           'screensize', 'setup', 'Terminator', 'setworldcoordinates', 'textinput', 'title', 'tracer', 'turtles',
+           'update', 'window_height', 'window_width', 'write_docstringdict', 'done', 'circle', 'clear', 'clearstamp',
+           'clearstamps', 'clone', 'color', 'degrees', 'distance', 'dot', 'down', 'end_fill', 'end_poly', 'fd',
+           'fillcolor', 'filling', 'forward', 'get_poly', 'getpen', 'getscreen', 'get_shapepoly', 'getturtle', 'goto',
+           'heading', 'hideturtle', 'home', 'ht', 'isdown', 'isvisible', 'left', 'lt', 'onclick', 'ondrag', 'onrelease',
+           'pd', 'pen', 'pencolor', 'pendown', 'pensize', 'penup', 'pos', 'position', 'pu', 'radians', 'right', 'reset',
+           'resizemode', 'rt', 'seth', 'setheading', 'setpos', 'setposition', 'settiltangle', 'setundobuffer', 'setx',
+           'sety', 'shape', 'shapesize', 'shapetransform', 'shearfactor', 'showturtle', 'speed', 'st', 'stamp', 'tilt',
+           'tiltangle', 'towards', 'turtlesize', 'undo', 'undobufferentries', 'up', 'width', 'write', 'xcor', 'ycor']
+
 _all_turtles = []
 
 
@@ -68,7 +82,7 @@ class Screen:
     def window_height(self):
         return 1000
 
-    def tracer(self, n):
+    def tracer(self, *args, **kwargs):
         pass
 
 
@@ -134,33 +148,6 @@ class Turtle:
     def setheading(self, to_angle):
         self._heading = to_angle / 180 * math.pi
 
-    def pensize(self):
-        pass
-
-    def pencolor(self):
-        pass
-
-    def fillcolor(self):
-        pass
-
-    def begin_fill(self):
-        pass
-
-    def end_fill(self):
-        pass
-
-    def showturtle(self):
-        pass
-
-    def hideturtle(self):
-        pass
-
-    def write(self):
-        pass
-
-    def speed(self):
-        pass
-
     def getscreen(self):
         return Screen()
 
@@ -182,28 +169,18 @@ class Turtle:
     def isdown(self):
         return self._pendown
 
-
-def onkey(*args, **kwargs):
-    pass
-
-
-def listen(*args, **kwargs):
-    pass
-
-
-def ontimer(*args, **kwargs):
-    pass
+    fd = forward
+    bk = backward
+    back = backward
+    rt = right
+    lt = left
+    pos = position
+    setpos = goto
+    setposition = goto
+    seth = setheading
 
 
-def mainloop(*args, **kwargs):
-    pass
-
-
-def textinput(*args, **kwargs):
-    return input()
-
-
-def setworldcoordinates(*args, **kwargs):
+def _dummy_func(*args, **kwargs):
     pass
 
 
@@ -217,3 +194,42 @@ for name in dir(_default_turtle):
 
 def turtles():
     return _all_turtles.copy()
+
+
+cur_dir = set(dir())
+turtle_functions = ['Screen', 'addshape', 'back', 'backward', 'begin_fill', 'begin_poly', 'bgcolor', 'bgpic', 'bk',
+                    'bye', 'circle', 'clear', 'clearscreen', 'clearstamp', 'clearstamps', 'clone', 'color', 'colormode',
+                    'config_dict', 'deepcopy', 'degrees', 'delay', 'distance', 'done', 'dot', 'down', 'end_fill',
+                    'end_poly', 'exitonclick', 'fd', 'fillcolor', 'filling', 'forward', 'get_poly', 'get_shapepoly',
+                    'getcanvas', 'getmethparlist', 'getpen', 'getscreen', 'getshapes', 'getturtle', 'goto', 'heading',
+                    'hideturtle', 'home', 'ht', 'isdown', 'isfile', 'isvisible', 'join', 'left', 'listen', 'lt',
+                    'mainloop', 'mode', 'numinput', 'onclick', 'ondrag', 'onkey', 'onkeypress', 'onkeyrelease',
+                    'onrelease', 'onscreenclick', 'ontimer', 'pd', 'pen', 'pencolor', 'pendown', 'pensize', 'penup',
+                    'pos', 'position', 'pu', 'radians', 'read_docstrings', 'readconfig', 'register_shape', 'reset',
+                    'resetscreen', 'resizemode', 'right', 'rt', 'screensize', 'seth', 'setheading', 'setpos',
+                    'setposition', 'settiltangle', 'setundobuffer', 'setup', 'setworldcoordinates', 'setx', 'sety',
+                    'shape', 'shapesize', 'shapetransform', 'shearfactor', 'showturtle', 'speed', 'split', 'st',
+                    'stamp',
+                    'textinput', 'tilt', 'tiltangle', 'title', 'towards', 'tracer', 'turtles', 'turtlesize', 'undo',
+                    'undobufferentries', 'up', 'update', 'width', 'window_height', 'window_width', 'write',
+                    'write_docstringdict', 'xcor', 'ycor']
+for name in turtle_functions:
+    if name not in cur_dir:
+        code = '{name} = _dummy_func'.format(name=name)
+        exec(code)
+
+turtle_methods = ['back', 'backward', 'begin_fill', 'begin_poly', 'bk', 'circle', 'clear', 'clearstamp', 'clearstamps',
+                  'clone', 'color', 'degrees', 'distance', 'dot', 'down', 'end_fill', 'end_poly', 'fd', 'fillcolor',
+                  'filling', 'forward', 'get_poly', 'get_shapepoly', 'getpen', 'getscreen', 'getturtle', 'goto',
+                  'heading', 'hideturtle', 'home', 'ht', 'isdown', 'isvisible', 'left', 'lt', 'onclick', 'ondrag',
+                  'onrelease', 'pd', 'pen', 'pencolor', 'pendown', 'pensize', 'penup', 'pos', 'position', 'pu',
+                  'radians', 'reset', 'resizemode', 'right', 'rt', 'seth', 'setheading', 'setpos', 'setposition',
+                  'settiltangle', 'setundobuffer', 'setx', 'sety', 'shape', 'shapesize', 'shapetransform',
+                  'shearfactor', 'showturtle', 'speed', 'st', 'stamp', 'tilt', 'tiltangle', 'towards', 'turtlesize',
+                  'undo', 'undobufferentries', 'up', 'width', 'write', 'xcor', 'ycor', ]
+turtle_dir = set(dir(_default_turtle))
+for name in turtle_methods:
+    if name not in turtle_dir:
+        code = 'setattr(Turtle, "{name}", _dummy_func)'.format(name=name)
+        exec(code)
+

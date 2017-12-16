@@ -10,7 +10,7 @@ setup(
     author='Sergey Shashkov',
     author_email='sh57@yandex.ru',
     url='https://github.com/ShashkovS/turtle_tester',
-    py_modules=['turtle_tester'],
+    py_modules=['turtle_tester', 'check_turtle', 'proxy_pgm_turtle'],
     install_requires=[],
     include_package_data=True,
     license='MIT'
