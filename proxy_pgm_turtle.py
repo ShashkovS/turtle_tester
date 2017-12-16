@@ -6,8 +6,6 @@ sys.path.extend(['/usr/lib64/python35.zip', '/usr/lib64/python3.5', '/usr/lib64/
 user_pgm = sys.argv[1]
 with open(user_pgm, 'r', encoding='utf-8') as f:
     code = f.read()
-code = code.replace('import turtle', 'import turtle_tester')
+code = code.replace('import turtle', 'import turtle_tester as turtle')
 code = code.replace('turtle import', 'turtle_tester import')
-
-code = '\n'.join(code)
 exec(code)

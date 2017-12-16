@@ -15,4 +15,15 @@ try:
 except ZeroDivisionError:
     sys.exit(PE)
 
+pup_ans = pup_ans.splitlines()
+if not all(' -> ' in row for row in pup_ans):
+    error('Лишний вывод в stdin')
+
+for i, row in enumerate(pup_ans):
+    pup_ans[i] = list(map(literal_eval, row.split(' -> ')))
+
+cor_ans = cor_ans.splitlines()
+for i, row in enumerate(cor_ans):
+    cor_ans[i] = list(map(literal_eval, row.split(' -> ')))
+
 ok('Настоящая проверка будет чуть позже')
