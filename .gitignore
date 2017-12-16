@@ -1,0 +1,5 @@
+build/
+dist/
+matplotlib_tester.egg-info/
+/**/__pycache__/
+/**/.idea/
