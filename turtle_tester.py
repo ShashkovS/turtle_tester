@@ -15,6 +15,7 @@ __all__ = ['ScrolledCanvas', 'TurtleScreen', 'Screen', 'RawTurtle', 'Turtle', 'R
            'sety', 'shape', 'shapesize', 'shapetransform', 'shearfactor', 'showturtle', 'speed', 'st', 'stamp', 'tilt',
            'tiltangle', 'towards', 'turtlesize', 'undo', 'undobufferentries', 'up', 'width', 'write', 'xcor', 'ycor']
 
+
 _all_turtles = []
 
 
@@ -233,3 +234,18 @@ for name in turtle_methods:
         code = 'setattr(Turtle, "{name}", _dummy_func)'.format(name=name)
         exec(code)
 
+
+class Pen:
+    pass
+class RawPen:
+    pass
+class RawTurtle(Turtle):
+    pass
+class ScrolledCanvas:
+    pass
+class Shape:
+    pass
+class Terminator:
+    pass
+class TurtleScreen(Screen):
+    pass
