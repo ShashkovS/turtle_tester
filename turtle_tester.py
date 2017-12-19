@@ -70,7 +70,7 @@ class Vec2D(tuple):
         return (self[0], self[1])
 
     def __repr__(self):
-        return "({},{})".format(*self)
+        return "({},{})".format(round(self[0], 8), round(self[1], 8))
 
 
 class Screen:
