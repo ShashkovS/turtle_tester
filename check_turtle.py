@@ -7,7 +7,8 @@ from copy import deepcopy
 from math import hypot, sin, cos, atan2, acos
 sys.stdout, sys.stderr = codecs.getwriter("utf-8")(sys.stdout.detach()), codecs.getwriter("utf-8")(sys.stderr.detach())
 OK = 0; PE = 4; WA = 5; CF = 6
-EPS = 1e-6
+EPS = 1e-3
+EPS_ABS = 1e-1
 def error(*args, sep=' '): sys.stderr.write(args[0].format(*args[1:])); sys.exit(WA)
 def ok(*args, sep=' '): sys.stdout.write(args[0].format(*args[1:])); sys.exit(OK)
 
@@ -19,6 +20,31 @@ try:
     pup_ans = open(sys.argv[2], encoding='utf-8').read().strip()
 except ZeroDivisionError:
     sys.exit(PE)
+
+# cor_ans = """\
+# (-350.00, +233.33) -> (+350.00, +233.33)
+# (+350.00, +233.33) -> (  +0.00, -372.88)
+# (  +0.00, -372.88) -> (-350.00, +233.33)
+# """
+#
+# pup_ans = """\
+# (-250.00, +100.00) -> (+250.00, +100.00)
+# (+250.00, +100.00) -> (  +0.00, -333.01)
+# (  +0.00, -333.01) -> (-250.00, +100.00)
+# """
+
+# cor_ans = """\
+# (-350.00,   +0.00) -> (-116.67,   +0.00)
+# (-116.67,   +0.00) -> (  +0.00, +202.07)
+# (  +0.00, +202.07) -> (+116.67,   +0.00)
+# (+116.67,   +0.00) -> (+350.00,   +0.00)"""
+#
+# pup_ans = """\
+# (-475.00,   +0.00) -> (-158.33,   +0.00)
+# (-158.33,   +0.00) -> (  +0.00, +274.24)
+# (  +0.00, +274.24) -> (+158.33,   +0.00)
+# (+158.33,   +0.00) -> (+475.00,   +0.00)
+# """
 
 # cor_ans = """\
 # (  +0.00,   +0.00) -> (  +0.00,  +50.00)
@@ -128,6 +154,11 @@ for i, row in enumerate(cor_ans):
     cor_ans[i] = list(map(literal_eval, row.split(' -> ')))
 
 
+if len(cor_ans) == 0 == len(pup_ans):
+    ok('Пусто -- ок')
+elif len(pup_ans) == 0:
+    error('Не нарисовано ни одного отрезка!')
+
 # Ок. У нас есть два списка отрезков, нужно проверить, что они гомотетичны...
 
 # segments = [[(0.0, 0.0), (100.0, 0.0)], [(100.0, 0.0), (0.0, -0.0)], [(0.0, -0.0), (100.0, 0.0)], [(100.0, 0.0), (50.0, -86.6)], [(50.0, -86.6), (-0.0, -0.0)], [(-0.0, -0.0), (100.0, 0.0)], [(100.0, 0.0), (100.0, -100.0)], [(100.0, -100.0), (0.0, -100.0)], [(0.0, -100.0), (-0.0, -0.0)], [(-0.0, -0.0), (100.0, -0.0)], [(100.0, -0.0), (130.9, -95.11)], [(130.9, -95.11), (50.0, -153.88)], [(50.0, -153.88), (-30.9, -95.11)], [(-30.9, -95.11), (-0.0, -0.0)], [(-0.0, -0.0), (100.0, -0.0)], [(100.0, -0.0), (150.0, -86.6)], [(150.0, -86.6), (100.0, -173.21)], [(100.0, -173.21), (0.0, -173.21)], [(0.0, -173.21), (-50.0, -86.6)], [(-50.0, -86.6), (-0.0, -0.0)], [(-0.0, -0.0), (100.0, 0.0)], [(100.0, 0.0), (162.35, -78.18)], [(162.35, -78.18), (140.1, -175.68)], [(140.1, -175.68), (50.0, -219.06)], [(50.0, -219.06), (-40.1, -175.68)], [(-40.1, -175.68), (-62.35, -78.18)], [(-62.35, -78.18), (-0.0, -0.0)]]
@@ -235,8 +266,8 @@ def two_segmset_eq(segm1, segm2):
         j = 0
         while j < len(segm2):
             (fx2, fy2), (tx2, ty2) = segm2[j]
-            if (abs(fx1 - fx2) < EPS and abs(fy1 - fy2) < EPS and abs(tx1 - tx2) < EPS and abs(ty1 - ty2) < EPS) or \
-                    (abs(fx1 - tx2) < EPS and abs(fy1 - ty2) < EPS and abs(tx1 - fx2) < EPS and abs(ty1 - fy2) < EPS):
+            if (abs(fx1 - fx2) < EPS_ABS and abs(fy1 - fy2) < EPS_ABS and abs(tx1 - tx2) < EPS_ABS and abs(ty1 - ty2) < EPS_ABS) or \
+                    (abs(fx1 - tx2) < EPS_ABS and abs(fy1 - ty2) < EPS_ABS and abs(tx1 - fx2) < EPS_ABS and abs(ty1 - fy2) < EPS_ABS):
                 segm1.pop(i)
                 segm2.pop(j)
                 break
@@ -248,19 +279,23 @@ def two_segmset_eq(segm1, segm2):
 
 for segments in (cor_ans, pup_ans):
     preprocess_segments(segments)
+    # print(segments)
+
 
 if len(cor_ans) != len(pup_ans):
-    error('Количество непересекающихся отрезков в ответе {} не соответствует правильному {}', len(cor_ans),
-          len(pup_ans))
+    error('Количество непересекающихся отрезков в ответе {} не соответствует правильному {}', len(cor_ans), len(pup_ans))
 
 best_rad = find_best_dist(cor_ans)
 cor_rad_points = find_rad_points(cor_ans, best_rad)
 pup_rad_points = find_rad_points(pup_ans, best_rad)
+# print(best_rad, cor_rad_points, pup_rad_points, sep='\n*\n')
 
 if len(cor_rad_points) != len(pup_rad_points):
-    error('Картинку из ответа не удаётся перевести в правильную преобразованием подобия')
+    error('Картинку из ответа не удаётся перевести в правильную преобразованием подобия, '
+          'не найдены точки на нужном расстоянии от центра масс')
 
 test_angles = calc_test_angles(cor_rad_points, pup_rad_points)
+# print(test_angles)
 for angle in test_angles:
     pup_ans_cp = deepcopy(pup_ans)
     rotate_everything(pup_ans_cp, angle)
