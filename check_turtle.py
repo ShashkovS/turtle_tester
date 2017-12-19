@@ -24,6 +24,22 @@ except ZeroDivisionError:
     sys.exit(PE)
 
 # cor_ans = """\
+# (0.0,0.0)->(3.061616997868383e-15,50.0)
+# (3.061616997868383e-15,50.0)->(-1.5308084989341916e-14,-50.0)
+# (-1.5308084989341916e-14,-50.0)->(1.5308084989341916e-14,50.0)
+# (0.0,0.0)->(3.061616997868383e-15,50.0)
+# (3.061616997868383e-15,50.0)->(-86.60254037844388,2.842170943040401e-14)
+# (-86.60254037844388,2.842170943040401e-14)->(-4.263256414560601e-14,-50.000000000000014)
+# (-4.263256414560601e-14,-50.000000000000014)->(-1.201639416692218e-14,49.999999999999986)"""
+#
+# pup_ans = """\
+# (300.0,0.0)->(300.0,100.0)
+# (300.0,100.0)->(300.0,0.0)
+# (300.0,0.0)->(213.39745962155612,49.99999999999997)
+# (213.39745962155612,49.99999999999997)->(299.99999999999994,100.00000000000001)
+# (299.99999999999994,100.00000000000001)->(300.0,1.4210854715202004e-14)"""
+
+# cor_ans = """\
 # (-350.0,-233.33333333333334)->(0.0,-233.33333333333334)
 # (0.0,-233.33333333333334)->(-174.99999999999991,69.77555799122021)
 # (-174.99999999999991,69.77555799122021)->(-350.00000000000006,-233.33333333333323)
@@ -69,6 +85,8 @@ if len(cor_ans) == 0 == len(pup_ans):
     ok('Пусто -- ок')
 elif len(pup_ans) == 0:
     error('Не нарисовано ни одного отрезка!')
+elif len(cor_ans) * 50 < len(pup_ans):
+    error('Картинка состоит из слишком большого числа отрезков для данной задачи')
 
 # Ок. У нас есть два списка отрезков, нужно проверить, что они гомотетичны...
 
@@ -97,9 +115,14 @@ def preprocess_segments(segments):
                 # когда пересекаются их проекции на оси Х и Y
                 if max(fx1, tx1) >= min(fx2, tx2) - EPS and max(fx2, tx2) >= min(fx1, tx1) - EPS and \
                         max(fy1, ty1) >= min(fy2, ty2) - EPS and max(fy2, ty2) >= min(fy1, ty1) - EPS:
-                    nfx, nfy = min([(fx2, fy2), (tx2, ty2), (fx1, fy1), (tx1, ty1)])
-                    ntx, nty = max([(fx2, fy2), (tx2, ty2), (fx1, fy1), (tx1, ty1)])
-                    segments[i] = [(nfx, nfy), (ntx, nty)]
+                    mnx, mxx = min((fx1, tx1, fx2, tx2)), max((fx1, tx1, fx2, tx2))
+                    mny, mxy = min((fy1, ty1, fy2, ty2)), max((fy1, ty1, fy2, ty2))
+                    if abs(dx1 * (mxy-mny) - dy1 * (mxx-mnx)) < EPS:
+                        segments[i] = [(mnx, mny), (mxx, mxy)]
+                    elif abs(dx1 * (-mxy+mny) - dy1 * (mxx-mnx)) < EPS:
+                        segments[i] = [(mnx, mxy), (mxx, mny)]
+                    else:
+                        raise ValueError('Error in check pgm')
                     # print(f'{i}-й и {j}-й пересекаются. Заменяем на {segments[i]}')
                     segments.pop(j)
                     break
@@ -191,6 +214,7 @@ def two_segmset_eq(segm1, segm2):
             i += 1
     return len(segm1) == len(segm2) == 0
 
+preprocess_segments(pup_ans)
 
 for segments in (cor_ans, pup_ans):
     preprocess_segments(segments)
@@ -198,7 +222,7 @@ for segments in (cor_ans, pup_ans):
 
 
 if len(cor_ans) != len(pup_ans):
-    error('Количество непересекающихся отрезков в ответе {} не соответствует правильному {}', len(cor_ans), len(pup_ans))
+    error('Количество непересекающихся отрезков в ответе {} не соответствует правильному {}', len(pup_ans), len(cor_ans))
 
 best_rad = find_best_dist(cor_ans)
 cor_rad_points = find_rad_points(cor_ans, best_rad)

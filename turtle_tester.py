@@ -99,13 +99,13 @@ class Turtle:
 
     def forward(self, distance):
         new_coords = self._coords + Vec2D(math.cos(self._heading), math.sin(self._heading)) * distance
-        if self._pendown:
+        if self._pendown and self._coords != new_coords:
             print(self._coords, '->', new_coords, sep='')
         self._coords = new_coords
 
     def backward(self, distance):
         new_coords = self._coords - Vec2D(math.cos(self._heading), math.sin(self._heading)) * distance
-        if self._pendown:
+        if self._pendown and self._coords != new_coords:
             print(self._coords, '->', new_coords, sep='')
         self._coords = new_coords
 
@@ -123,26 +123,26 @@ class Turtle:
 
     def goto(self, x, y):
         new_coords = Vec2D(x, y)
-        if self._pendown:
+        if self._pendown and self._coords != new_coords:
             print(self._coords, '->', new_coords, sep='')
         self._coords = new_coords
 
     def home(self):
         new_coords = Vec2D(0, 0)
-        if self._pendown:
+        if self._pendown and self._coords != new_coords:
             print(self._coords, '->', new_coords, sep='')
         self._coords = new_coords
         self._heading = 0
 
     def setx(self, x):
         new_coords = Vec2D(x, self._coords[1])
-        if self._pendown:
+        if self._pendown and self._coords != new_coords:
             print(self._coords, '->', new_coords, sep='')
         self._coords = new_coords
 
     def sety(self, y):
         new_coords = Vec2D(self._coords[0], y)
-        if self._pendown:
+        if self._pendown and self._coords != new_coords:
             print(self._coords, '->', new_coords, sep='')
         self._coords = new_coords
 
