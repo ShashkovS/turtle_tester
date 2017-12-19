@@ -35,7 +35,7 @@ class Vec2D(tuple):
     """
 
     def __new__(cls, x, y):
-        return tuple.__new__(cls, (x, y))
+        return tuple.__new__(cls, (float(x), float(y)))
 
     def __add__(self, other):
         return Vec2D(self[0] + other[0], self[1] + other[1])
