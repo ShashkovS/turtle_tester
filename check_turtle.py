@@ -16,24 +16,24 @@ def ok(*args, sep=' '): sys.stdout.write(args[0].format(*args[1:])+'\n'); sys.ex
 DEBUG = False
 
 
-# try:
-#     test = open(sys.argv[1], encoding='utf-8').read().strip()
-#     cor_ans = open(sys.argv[3], encoding='utf-8').read().strip()
-#     pup_ans = open(sys.argv[2], encoding='utf-8').read().strip()
-# except ZeroDivisionError:
-#     sys.exit(PE)
+try:
+    test = open(sys.argv[1], encoding='utf-8').read().strip()
+    cor_ans = open(sys.argv[3], encoding='utf-8').read().strip()
+    pup_ans = open(sys.argv[2], encoding='utf-8').read().strip()
+except ZeroDivisionError:
+    sys.exit(PE)
 
-cor_ans = """\
-(-350.0,-233.33333)->(350.0,-233.33333)
-(350.0,-233.33333)->(1.7053026e-13,372.88445)
-(1.7053026e-13,372.88445)->(-350.0,-233.33333)
-"""
-
-pup_ans = """\
-(-460.0,-390.0)->(7540.0,-390.0)
-(7540.0,-390.0)->(3540.0,6538.2032)
-(3540.0,6538.2032)->(-460.0,-390.0)
-"""
+# cor_ans = """\
+# (-350.0,-233.33333)->(350.0,-233.33333)
+# (350.0,-233.33333)->(1.7053026e-13,372.88445)
+# (1.7053026e-13,372.88445)->(-350.0,-233.33333)
+# """
+#
+# pup_ans = """\
+# (-460.0,-390.0)->(7540.0,-390.0)
+# (7540.0,-390.0)->(3540.0,6538.2032)
+# (3540.0,6538.2032)->(-460.0,-390.0)
+# """
 
 # cor_ans = """\
 # (-350.00,   +0.00)->(-116.67,   +0.00)
