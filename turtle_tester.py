@@ -73,11 +73,15 @@ class Vec2D(tuple):
         return (self[0], self[1])
 
     def __repr__(self):
-        x = _FMT.format(self[0]).rstrip('0.-')
-        y = _FMT.format(self[1]).rstrip('0.-')
-        if x == '':
+        x = _FMT.format(self[0]).rstrip('0')
+        y = _FMT.format(self[1]).rstrip('0')
+        if x.endswith('.'):
+            x = x[:-1]
+        if y.endswith('.'):
+            y = x[:-1]
+        if x == '-0':
             x = '0'
-        if y == '':
+        if y == '-0':
             y = '0'
         return "({},{})".format(x, y)
 
