@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 import math
+import os
+_EPS = float(os.environ.get('EPS', 1e-8))
+_DIG = len(str(int(1/_EPS)))-1
+_FMT = '{:.' + str(_DIG) + 'f}'
 
 __all__ = ['ScrolledCanvas', 'TurtleScreen', 'Screen', 'RawTurtle', 'Turtle', 'RawPen', 'Pen', 'Shape', 'Vec2D', 'back',
            'backward', 'begin_fill', 'begin_poly', 'bk', 'addshape', 'bgcolor', 'bgpic', 'bye', 'clearscreen',
@@ -69,12 +73,12 @@ class Vec2D(tuple):
         return (self[0], self[1])
 
     def __repr__(self):
-        x = str(round(self[0], 8))
-        y = str(round(self[1], 8))
-        if x == '-0.0':
-            x = '0.0'
-        if y == '-0.0':
-            y = '0.0'
+        x = _FMT.format(self[0]).rstrip('0.-')
+        y = _FMT.format(self[1]).rstrip('0.-')
+        if x == '':
+            x = '0'
+        if y == '':
+            y = '0'
         return "({},{})".format(x, y)
 
 
