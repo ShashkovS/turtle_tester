@@ -212,6 +212,13 @@ def turtles():
 
 
 def clearscreen():
+    global _all_turtles
+    for i in range(len(_all_turtles) - 1, -1, -1):
+        T = _all_turtles[i]
+        T._reset()
+        if T is not _default_turtle:
+            del T
+            _all_turtles.pop(i)
     _all_turtles = [_default_turtle]
     _default_turtle._reset()
 
