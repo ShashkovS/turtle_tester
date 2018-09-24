@@ -78,10 +78,10 @@ class Vec2D(tuple):
         if x.endswith('.'):
             x = x[:-1]
         if y.endswith('.'):
-            y = x[:-1]
-        if x == '-0':
+            y = y[:-1]
+        if x in ('-0', '-', ''):
             x = '0'
-        if y == '-0':
+        if y in ('-0', '-', ''):
             y = '0'
         return "({},{})".format(x, y)
 
