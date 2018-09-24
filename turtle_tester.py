@@ -69,7 +69,13 @@ class Vec2D(tuple):
         return (self[0], self[1])
 
     def __repr__(self):
-        return "({},{})".format(round(self[0], 8), round(self[1], 8))
+        x = str(round(self[0], 8))
+        y = str(round(self[1], 8))
+        if x == '-0.0':
+            x = '0.0'
+        if y == '-0.0':
+            y = '0.0'
+        return "({},{})".format(x, y)
 
 
 class Screen:
