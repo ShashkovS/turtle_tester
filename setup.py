@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='turtle_tester',
-    version='0.0.1',
+    version='0.0.2',
     description='Функция для тестирования задач по turtle',
     long_description='Функция для тестирования задач по turtle',
     author='Sergey Shashkov',

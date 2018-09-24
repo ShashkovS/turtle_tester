@@ -15,7 +15,6 @@ __all__ = ['ScrolledCanvas', 'TurtleScreen', 'Screen', 'RawTurtle', 'Turtle', 'R
            'sety', 'shape', 'shapesize', 'shapetransform', 'shearfactor', 'showturtle', 'speed', 'st', 'stamp', 'tilt',
            'tiltangle', 'towards', 'turtlesize', 'undo', 'undobufferentries', 'up', 'width', 'write', 'xcor', 'ycor']
 
-
 _all_turtles = []
 
 
@@ -134,6 +133,11 @@ class Turtle:
         self._coords = new_coords
         self._heading = 0
 
+    def _reset(self):
+        self._coords = Vec2D(0, 0)
+        self._heading = 0
+        self._pendown = True
+
     def setx(self, x):
         new_coords = Vec2D(x, self._coords[1])
         if self._pendown and self._coords != new_coords:
@@ -175,10 +179,14 @@ class Turtle:
     back = backward
     rt = right
     lt = left
-    pos = position
     setpos = goto
     setposition = goto
     seth = setheading
+    pos = position
+    pd = pendown
+    down = pendown
+    pu = penup
+    up = penup
 
 
 def _dummy_func(*args, **kwargs):
@@ -196,6 +204,19 @@ for name in dir(_default_turtle):
 def turtles():
     return _all_turtles.copy()
 
+
+def clearscreen():
+    _all_turtles = [_default_turtle]
+    _default_turtle._reset()
+
+
+def resetscreen():
+    for T in _all_turtles:
+        T._reset()
+
+
+clear = clearscreen
+reset = resetscreen
 
 cur_dir = set(dir())
 turtle_functions = ['Screen', 'addshape', 'back', 'backward', 'begin_fill', 'begin_poly', 'bgcolor', 'bgpic', 'bk',
@@ -237,15 +258,27 @@ for name in turtle_methods:
 
 class Pen:
     pass
+
+
 class RawPen:
     pass
+
+
 class RawTurtle(Turtle):
     pass
+
+
 class ScrolledCanvas:
     pass
+
+
 class Shape:
     pass
+
+
 class Terminator:
     pass
+
+
 class TurtleScreen(Screen):
     pass
