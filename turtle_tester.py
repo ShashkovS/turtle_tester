@@ -177,7 +177,7 @@ class Turtle:
         return self._coords[0]
 
     def ycor(self):
-        return self._coords[0]
+        return self._coords[1]
 
     def heading(self):
         return self._heading * 180 / math.pi
