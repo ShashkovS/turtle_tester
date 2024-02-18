@@ -174,10 +174,10 @@ class Turtle:
         return tuple(self._coords)
 
     def xcor(self):
-        return self._coords[0]
+        return round(self._coords[0], _DIG)
 
     def ycor(self):
-        return self._coords[1]
+        return round(self._coords[1], _DIG)
 
     def heading(self):
         return self._heading * 180 / math.pi
