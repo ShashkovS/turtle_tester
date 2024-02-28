@@ -234,12 +234,13 @@ def two_segmset_eq(segm1, segm2):
             i += 1
     return len(segm1) == len(segm2) == 0
 
+if DEBUG: print("Обрабатываем правильный ответ")
+preprocess_segments(cor_ans)
+if DEBUG: print('После масштабирования:', cor_ans, sep='\n')
+
+if DEBUG: print("\nОбрабатываем ответ учащегося")
 preprocess_segments(pup_ans)
-
-for segments in (cor_ans, pup_ans):
-    preprocess_segments(segments)
-    if DEBUG: print('После масштабирования:', segments, sep='\n')
-
+if DEBUG: print('После масштабирования:', pup_ans, sep='\n')
 
 if len(cor_ans) != len(pup_ans):
     error('Количество непересекающихся отрезков в ответе {} не соответствует правильному {}', len(pup_ans), len(cor_ans))
