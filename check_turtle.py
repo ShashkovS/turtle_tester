@@ -164,11 +164,18 @@ def preprocess_segments(segments):
 def find_best_dist(segments):
     dists = []
     for (fx, fy), (tx, ty) in segments:
-        dists.append(hypot(fx, fy))
-        dists.append(hypot(tx, ty))
+        h1 = hypot(fx, fy)
+        if h1 > EPS:
+            dists.append(h1)
+        h2 = hypot(tx, ty)
+        if h2 > EPS:
+            dists.append(h2)
     # Ищем радиус, у которого в EPS-окрестности минимальное кол-во точек
-    best_rad = min(dists, key=lambda d1: sum(abs(d1 - d2) < EPS for d2 in dists))
-    return best_rad
+    # Если таких несколько, то берём максимальное значение радиуса
+    if dists:
+        return min(dists, key=lambda d1: (sum(abs(d1 - d2) < EPS for d2 in dists), -d1))
+    else:
+        return 0
 
 
 def find_rad_points(segments, rad):
