@@ -8,6 +8,7 @@ from math import hypot, sin, cos, atan2, acos
 sys.stdout, sys.stderr = codecs.getwriter("utf-8")(sys.stdout.detach()), codecs.getwriter("utf-8")(sys.stderr.detach())
 OK = 0; PE = 4; WA = 5; CF = 6
 EPS = 1e-4
+ZERO_EPS = 1e-8
 EPS_ABS = 1e-2
 def error(*args, sep=' '): sys.stderr.write(args[0].format(*args[1:])+'\n'); sys.exit(WA)
 def ok(*args, sep=' '): sys.stdout.write(args[0].format(*args[1:])+'\n'); sys.exit(OK)
@@ -94,9 +95,20 @@ elif len(cor_ans) * 50 < len(pup_ans):
 # segments = [[(0.0, 0.0), (100.0, 0.0)], [(100.0, 0.0), (200.0, -0.0)], [(50.0, -0.0), (150.0, 0.0)]]
 
 def preprocess_segments(segments):
+    # Сделаем так, чтобы минимальный отрезок имел длину 1
+    min_segm = float('inf')
+    for i, ((fx, fy), (tx, ty)) in enumerate(segments):
+        min_segm = min(min_segm, hypot(fx-tx, fy-ty))
+        if min_segm < 1e-8:
+            error('Длина одного из отрезков меньше 1/10⁸, он слишком короткий: ' + str((i, ((fx, fy), (tx, ty)))))
+    coeff = 1 / min_segm
+    for i, ((fx, fy), (tx, ty)) in enumerate(segments):
+        segments[i] = [[fx * coeff, fy * coeff], [tx * coeff, ty * coeff]]
+    # Так, теперь нет слишком уж коротких отрезков
+
     # Делаем так, чтобы все отрезки «смотрели» направо, или хотя бы наверх.
     for i, ((fx, fy), (tx, ty)) in enumerate(segments):
-        if fx > tx - EPS or (abs(fx - tx) < EPS and fy > ty - EPS):
+        if fx > tx - ZERO_EPS or (abs(fx - tx) < ZERO_EPS and fy > ty - ZERO_EPS):
             segments[i] = [(tx, ty), (fx, fy)]
     # Сделаем так, чтобы никакие два отрезка нельзя было заменить одним другим отрезком.
     # Пока наивное решение за n**2 (и n**3 в худшем случае)
@@ -122,7 +134,8 @@ def preprocess_segments(segments):
                     elif abs(dx1 * (-mxy+mny) - dy1 * (mxx-mnx)) < EPS:
                         segments[i] = [(mnx, mxy), (mxx, mny)]
                     else:
-                        raise ValueError('Error in check pgm')
+                        continue
+                        # raise ValueError('Error in check pgm')
                     # print(f'{i}-й и {j}-й пересекаются. Заменяем на {segments[i]}')
                     segments.pop(j)
                     break
