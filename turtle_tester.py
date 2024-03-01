@@ -134,8 +134,11 @@ class Turtle:
     def penup(self):
         self._pendown = False
 
-    def goto(self, x, y):
-        new_coords = Vec2D(x, y)
+    def goto(self, x, y=None):
+        if y is None:
+            new_coords = Vec2D(x[0], x[1])
+        else:
+            new_coords = Vec2D(x, y)
         if self._pendown and self._coords != new_coords:
             print(self._coords, '->', new_coords, sep='')
         self._coords = new_coords
