@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import codecs
 import sys
+import os
 from ast import literal_eval
 from copy import deepcopy
 from math import hypot, sin, cos, atan2, acos
@@ -24,6 +25,16 @@ try:
 except ZeroDivisionError:
     sys.exit(PE)
 
+# Получаем значения переменных, устанавливающих параметры проверки
+def get_environment(var_name):
+    val = os.environ.get(var_name, "").lower()
+    return val in ['yes', 'true', 'y', '1']
+
+disable_shift = get_environment('DISABLE_SHIFT')
+disable_homothety = get_environment('DISABLE_HOMOTHETY')
+disable_rotation = get_environment('DISABLE_ROTATION')
+
+
 pup_ans = pup_ans.splitlines()
 if not all('->' in row for row in pup_ans):
     error('Лишний вывод в stdin')
@@ -45,6 +56,11 @@ elif len(cor_ans) * 50 < len(pup_ans):
 
 # Ок. У нас есть два списка отрезков, нужно проверить, что они гомотетичны...
 
+# Эта функция получает список отрезков и нормализовывает их, изменяя список
+# Также выполняется параллельный перенос и гомотетия
+# Функция возвращает три значения: x, y, coeff
+# (x, y) - координаты центра масс (он был перемещён в начало координат)
+# coeff - коэффициент гомотетии
 def preprocess_segments(segments):
     # Сделаем так, чтобы минимальный отрезок имел длину 1
     min_segm = float('inf')
@@ -52,9 +68,9 @@ def preprocess_segments(segments):
         min_segm = min(min_segm, hypot(fx-tx, fy-ty))
         if min_segm < 1e-8:
             error('Длина одного из отрезков меньше 1/10⁸, он слишком короткий: ' + str((i, ((fx, fy), (tx, ty)))))
-    coeff = 1 / min_segm
+    coeff1 = 1 / min_segm
     for i, ((fx, fy), (tx, ty)) in enumerate(segments):
-        segments[i] = [[fx * coeff, fy * coeff], [tx * coeff, ty * coeff]]
+        segments[i] = [[fx * coeff1, fy * coeff1], [tx * coeff1, ty * coeff1]]
     # Так, теперь нет слишком уж коротких отрезков
 
     # Делаем так, чтобы все отрезки «смотрели» направо, или хотя бы наверх.
@@ -107,9 +123,10 @@ def preprocess_segments(segments):
     max_dist = max(max(hypot(fx, fy), hypot(tx, ty)) for (fx, fy), (tx, ty) in segments)
     if max_dist == 0:
         error('В ответе только одна точка...')
-    coeff = 1000 / max_dist
+    coeff2 = 1000 / max_dist
     for i, ((fx, fy), (tx, ty)) in enumerate(segments):
-        segments[i] = [[fx * coeff, fy * coeff], [tx * coeff, ty * coeff]]
+        segments[i] = [[fx * coeff2, fy * coeff2], [tx * coeff2, ty * coeff2]]
+    return corr_x / coeff1, corr_y / coeff1, coeff1 * coeff2
 
 
 def find_best_dist(segments):
@@ -153,7 +170,8 @@ def find_rad_points(segments, rad):
 
 
 def calc_test_angles(pts1, pts2):
-    angles = []
+    # Добавим в начало угол поворота 0, чтобы проверить на то, подходит ли ответ без поворота
+    angles = [0]
     fx, fy = pts1[0]
     for sx, sy in pts2:
         angles.append(atan2(sx * fy - sy * fx, sx * fx + sy * fy))
@@ -186,12 +204,18 @@ def two_segmset_eq(segm1, segm2):
     return len(segm1) == len(segm2) == 0
 
 if DEBUG: print("Обрабатываем правильный ответ")
-preprocess_segments(cor_ans)
-if DEBUG: print('После масштабирования:', cor_ans, sep='\n')
+cor_x, cor_y, cor_coeff = preprocess_segments(cor_ans)
+if DEBUG:
+    print(f"Центр масс: ({cor_x}, {cor_y})")
+    print(f"Коэффициент масштабирования: {cor_coeff}")
+    print('После масштабирования:', cor_ans, sep='\n')
 
 if DEBUG: print("\nОбрабатываем ответ учащегося")
-preprocess_segments(pup_ans)
-if DEBUG: print('После масштабирования:', pup_ans, sep='\n')
+pup_x, pup_y, pup_coeff = preprocess_segments(pup_ans)
+if DEBUG:
+    print(f"Центр масс: ({pup_x}, {pup_y})")
+    print(f"Коэффициент масштабирования: {pup_coeff}")
+    print('После масштабирования:', pup_ans, sep='\n')
 
 if len(cor_ans) != len(pup_ans):
     error('Количество непересекающихся отрезков в ответе {} не соответствует правильному {}', len(pup_ans), len(cor_ans))
@@ -210,6 +234,18 @@ for angle in test_angles:
     pup_ans_cp = deepcopy(pup_ans)
     rotate_everything(pup_ans_cp, angle)
     if two_segmset_eq(cor_ans, pup_ans_cp):
+        # Удалось найти подходящий угол поворота...
+        if disable_homothety and abs(cor_coeff - pup_coeff) >= EPS:
+            error('Изображение в ответе подобно правильному, но размер изображения не совпадает.\nНеобходимо, чтобы размер изображения совпадал с правильным ответом')
+        if disable_rotation and angle != 0: # Здесь можно использовать точное равенство, т.к. первое значение угла в списке - 0
+            error('Изображение в ответе правильное, но повёрнуто.\nНеобходимо, чтобы изображение совпадало с правильным ответом без поворота')
+        if disable_shift and (abs(cor_x - pup_x) >= EPS or abs(cor_y - pup_y) >= EPS):
+            error('Изображение в ответе отличается от правильного сдвигом.\nНеобходимо, чтобы положение изображения совпадало с правильным ответом.')
         ok('Всё верно!')
 
 error('Картинку из ответа не удаётся перевести в правильную преобразованием подобия')
+
+# disable_translation = get_environment('DISABLE_TRANSLATION')
+# disable_homothety = get_environment('DISABLE_HOMOTHETY')
+# disable_rotation = get_environment('DISABLE_ROTATION')
+
