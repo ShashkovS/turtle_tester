@@ -245,7 +245,3 @@ for angle in test_angles:
 
 error('Картинку из ответа не удаётся перевести в правильную преобразованием подобия')
 
-# disable_translation = get_environment('DISABLE_TRANSLATION')
-# disable_homothety = get_environment('DISABLE_HOMOTHETY')
-# disable_rotation = get_environment('DISABLE_ROTATION')
-
