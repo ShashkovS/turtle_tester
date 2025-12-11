@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "turtle-tester"
+version = "0.1.0"
+description = "Library for testing turtle tasks (using a proxy module)."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.setuptools]
+py-modules = [
+    "turtle",
+    "turtle_tester",
+    "check_turtle",
+    "check_turtle_en",
+    "proxy_pgm_turtle",
+]
