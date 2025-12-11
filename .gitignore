@@ -3,3 +3,7 @@ dist/
 matplotlib_tester.egg-info/
 /**/__pycache__/
 /**/.idea/
+/turtle_tester.egg-info/
+.venv/
+.python-version
+.snapshot.js
